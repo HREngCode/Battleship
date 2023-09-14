@@ -37,7 +37,7 @@ function placeShips() {
                 placeShipOnBoard(startLocation, endLocation);
                 shipPlaced = true;
             }
-        }console.log("line 37 " + (shipLength));
+        }
     }
 }
 
@@ -75,7 +75,6 @@ function placeShipOnBoard(startLocation, endLocation) {
         for (let j = startCol; j <= endCol; j++) {
             const cell = String.fromCharCode(65 + i) + (j + 1);
             shipOnBoard.push(cell);
-            console.log("line 85" + cell);
         }
     }  
 }
