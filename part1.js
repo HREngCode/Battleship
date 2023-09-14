@@ -20,7 +20,6 @@ function initializeGame() {
             location = generateRandomLocation();
         } while (board.includes(location));
         board.push(location);
-        console.log(board)
     }
 
     console.log("Press any key to start the game.");
