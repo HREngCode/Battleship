@@ -94,8 +94,6 @@ function initializeGame() {
 function handleInput(input) {
     input = input.toUpperCase();
 
-    console.log("line 104 " + shipOnBoard);
-
     if (shipOnBoard.includes(input)) 
     {
         targets -= 1;    
