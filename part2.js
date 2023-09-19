@@ -30,7 +30,6 @@ function placeShips() {
       const endLocation = orientation === "horizontal"
           ? String.fromCharCode(startLocation.charCodeAt(0) + shipLength - 1) + startLocation.slice(1)
           : startLocation[0] + (parseInt(startLocation.slice(1)) + shipLength - 1);
-
           
 
       if (isValidPlacement(startLocation, endLocation)) {
@@ -66,9 +65,9 @@ function isValidPlacement(startLocation, endLocation) {
     endCol >= gridSize
   ) {
 
-    return checkStartEnd(startRow, startCol, endRow, endCol);
+    return false;
   }
-  return true;
+  return checkStartEnd(startRow, startCol, endRow, endCol);
 }
 
 function placeShipOnBoard(startLocation, endLocation) {
@@ -80,7 +79,9 @@ function placeShipOnBoard(startLocation, endLocation) {
   for (let i = startRow; i <= endRow; i++) {
     for (let j = startCol; j <= endCol; j++) {
       const cell = String.fromCharCode(65 + i) + (j + 1);
-      shipOnBoard.push(cell);
+      if(!shipOnBoard.includes(cell)) {
+        shipOnBoard.push(cell);
+      }
     }
   }
 }
@@ -116,7 +117,6 @@ function handleInput(input) {
         "You have destroyed all battleships. Would you like to play again?"
       );
       if (playAgain) {
-        shipsRemaining = 2;
         initializeGame();
       } else {
         console.log("Thanks for playing!");
@@ -134,6 +134,6 @@ function handleInput(input) {
 initializeGame();
 
 while (true) {
-  const input = rs.question("Enter a location: ", { limit: /^[a-jA-J][1-9]|10$/ });
+  const input = rs.question("Enter a location: ", { limit: /^[a-jA-J]([1-9]|10)$/ });
   handleInput(input);
 }
