@@ -5,6 +5,7 @@ const shipsRemaining = [2, 3, 3, 4, 5];
 const board = [];
 const shipOnBoard = [];
 const strikes = [];
+const hits = [];
 let targets = shipsRemaining.reduce((acc, val) => acc + val, 0);
 
 function generateRandomLocation() {
@@ -27,10 +28,12 @@ function placeShips() {
     while (!shipPlaced) {
       const orientation = Math.random() < 0.5 ? "horizontal" : "vertical";
       const startLocation = generateRandomLocation();
-      const endLocation = orientation === "horizontal"
-          ? String.fromCharCode(startLocation.charCodeAt(0) + shipLength - 1) + startLocation.slice(1)
-          : startLocation[0] + (parseInt(startLocation.slice(1)) + shipLength - 1);
-          
+      const endLocation =
+        orientation === "horizontal"
+          ? String.fromCharCode(startLocation.charCodeAt(0) + shipLength - 1) +
+            startLocation.slice(1)
+          : startLocation[0] +
+            (parseInt(startLocation.slice(1)) + shipLength - 1);
 
       if (isValidPlacement(startLocation, endLocation)) {
         placeShipOnBoard(startLocation, endLocation);
@@ -43,7 +46,7 @@ function placeShips() {
 function checkStartEnd(startRow, endRow, startCol, endCol) {
   for (let i = startRow; i <= endRow; i++) {
     for (let j = startCol; j <= endCol; j++) {
-      const cell = String.fromCharCode(65 + i) + (j + 1);
+      const cell = String.fromCharCode(65 + j) + (i + 1);
       if (shipOnBoard.includes(cell)) {
         return false;
       }
@@ -64,7 +67,6 @@ function isValidPlacement(startLocation, endLocation) {
     endRow >= gridSize ||
     endCol >= gridSize
   ) {
-
     return false;
   }
   return checkStartEnd(startRow, startCol, endRow, endCol);
@@ -79,9 +81,7 @@ function placeShipOnBoard(startLocation, endLocation) {
   for (let i = startRow; i <= endRow; i++) {
     for (let j = startCol; j <= endCol; j++) {
       const cell = String.fromCharCode(65 + i) + (j + 1);
-      if(!shipOnBoard.includes(cell)) {
-        shipOnBoard.push(cell);
-      }
+      shipOnBoard.push(cell);
     }
   }
 }
@@ -105,9 +105,9 @@ function initializeGame() {
 function handleInput(input) {
   input = input.toUpperCase();
 
-  if (shipOnBoard.includes(input)) {
+  if (shipOnBoard.includes(input) && !hits.includes(input)) {
     targets -= 1;
-
+    hits.push(input);
     console.log(
       `Hit. You have struck a battleship. There are ${targets} remaining.`
     );
@@ -123,9 +123,11 @@ function handleInput(input) {
         process.exit();
       }
     }
+  } else if (hits.includes(input)) {
+    console.log("You have hit this location. Please try again!");
   } else if (strikes.includes(input)) {
     console.log("You have already picked this location. Miss!");
-  } else {
+  } else if (!strikes.includes(input) && !hits.includes(input)) {
     console.log("You have missed!");
     strikes.push(input);
   }
@@ -134,6 +136,8 @@ function handleInput(input) {
 initializeGame();
 
 while (true) {
-  const input = rs.question("Enter a location: ", { limit: /^[a-jA-J]([1-9]|10)$/ });
+  const input = rs.question("Enter a location: ", {
+    limit: /^[a-jA-J]([1-9]|10)$/,
+  });
   handleInput(input);
 }
