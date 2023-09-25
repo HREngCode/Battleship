@@ -6,11 +6,12 @@ const board = [];
 const shipOnBoard = [];
 const strikes = [];
 const hits = [];
+const shipCoords = []
 let targets = shipsRemaining.reduce((acc, val) => acc + val, 0);
 
 function generateRandomLocation() {
   const row = String.fromCharCode(65 + Math.floor(Math.random() * gridSize));
-  const col = Math.floor(Math.random() * gridSize) + 1;
+  const col = Math.floor(Math.random() * gridSize) + 1; console.log('line 13: Row ' + row, 'Column ' + col);
   return row + col;
 }
 
@@ -26,14 +27,14 @@ function placeShips() {
   for (const shipLength of shipsRemaining) {
     let shipPlaced = false;
     while (!shipPlaced) {
-      const orientation = Math.random() < 0.5 ? "horizontal" : "vertical";
+      const orientation = Math.random() < 0.5 ? "horizontal" : "vertical"; console.log('line 29 ' + orientation);
       const startLocation = generateRandomLocation();
       const endLocation =
         orientation === "horizontal"
-          ? String.fromCharCode(startLocation.charCodeAt(0) + shipLength - 1) +
-            startLocation.slice(1)
-          : startLocation[0] +
-            (parseInt(startLocation.slice(1)) + shipLength - 1);
+          ? startLocation[0] +
+            (parseInt(startLocation.slice(1)) + shipLength - 1)
+          : String.fromCharCode(startLocation.charCodeAt(0) + shipLength - 1) +
+          (parseInt(startLocation.slice(1)));
 
       if (isValidPlacement(startLocation, endLocation)) {
         placeShipOnBoard(startLocation, endLocation);
@@ -44,13 +45,34 @@ function placeShips() {
 }
 
 function checkStartEnd(startRow, endRow, startCol, endCol) {
-  for (let i = startRow; i <= endRow; i++) {
-    for (let j = startCol; j <= endCol; j++) {
-      const cell = String.fromCharCode(65 + j) + (i + 1);
-      if (shipOnBoard.includes(cell)) {
-        return false;
+//horizontal check  start row is letter/start col is number
+  if (startRow === endRow) { 
+    for (let i = startCol; i <= endCol; i++) {
+      let horCoordinate = String.fromCharCode(65 + i) + (startCol);
+      if (shipOnBoard.includes(horCoordinate)) {
+        shipOnBoard = 0;
+        placeShips();
       }
     }
+  }
+  //vertical check
+  else {
+    for (let i = startRow; i <= endRow; i++) {
+      let verCoordinate = String.fromCharCode(65 + (i)) + (startCol);
+      if (shipOnBoard.includes(verCoordinate)) {
+        shipOnBoard = 0;
+        placeShips();
+      }
+    }
+  // console.log('line 47 ' + startRow, endRow, startCol, endCol);
+  // for (let i = startRow; i <= endRow; i++) {
+  //   for (let j = startCol; j <= endCol; j++) {
+  //     const cell = String.fromCharCode(65 + i) + (j + 1);
+  //     console.log('line 51 ' + cell);
+  //     if (shipOnBoard.includes(cell)) {
+  //       return false;
+  //     }
+  //   }
   }
   return true;
 }
@@ -60,7 +82,7 @@ function isValidPlacement(startLocation, endLocation) {
   const startCol = parseInt(startLocation.slice(1)) - 1;
   const endRow = endLocation.charCodeAt(0) - 65;
   const endCol = parseInt(endLocation.slice(1)) - 1;
-
+  console.log('line 65 ' + startLocation, endLocation);
   if (
     startRow < 0 ||
     startCol < 0 ||
@@ -90,11 +112,13 @@ function initializeGame() {
   board.length = 0;
   shipOnBoard.length = 0;
   strikes.length = 0;
+  hits.length = 0;
   buildGrid();
   placeShips();
+  console.log(shipOnBoard);
   console.log("Press any key to start the game.");
   rs.keyInPause();
-  console.clear();
+  // console.clear();
   console.log(
     `Enter a location to strike (e.g., A1-${String.fromCharCode(
       64 + gridSize

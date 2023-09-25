@@ -3,7 +3,7 @@ const rs = require("readline-sync");
 let shipsRemaining = 2;
 const board = [];
 const strikes = [];
-let hits = 0;
+const hits = [];
 
 function generateRandomLocation() {
   const row = String.fromCharCode(65 + Math.floor(Math.random() * 3));
@@ -14,6 +14,7 @@ function generateRandomLocation() {
 function initializeGame() {
   board.length = 0;
   strikes.length = 0;
+  hits.length = 0;
   for (let i = 0; i < 2; i++) {
     let location;
     {
@@ -32,8 +33,8 @@ function initializeGame() {
 function handleInput(input) {
   input = input.toUpperCase();
 
-  if (board.includes(input)) {
-    hits += 1;
+  if (board.includes(input) && !hits.includes(input)) {
+    hits.push(input);
     shipsRemaining -= 1;
     console.log(
       `Hit. You have sunk a battleship. ${shipsRemaining} ship(s) remaining.`
@@ -50,6 +51,8 @@ function handleInput(input) {
         process.exit();
       }
     }
+  } else if (hits.includes(input)) {
+    console.log("You have hit this location. Please try again!");
   } else if (strikes.includes(input)) {
     console.log("You have already picked this location. Miss!");
   } else {
