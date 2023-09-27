@@ -154,11 +154,9 @@ function initializeGame() {
   hits.length = 0;
   buildGrid();
   placeShips();
-  console.log(shipOnBoard);
-  console.log(shipCoords);
   console.log("Press any key to start the game.");
   rs.keyInPause();
-  // console.clear();
+  console.clear();
   console.log(
     `Enter a location to strike (e.g., A1-${String.fromCharCode(
       64 + gridSize
