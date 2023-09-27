@@ -36,12 +36,14 @@ function placeShips() {
           : String.fromCharCode(startLocation.charCodeAt(0) + shipLength - 1) +
             startLocation.slice(1);
 
-            const hasDuplicate = checkForDuplicates([...shipOnBoard, ...getShipCoordinates(startLocation, endLocation)]);
-            if (hasDuplicate) {
-              continue;
+            if (isValidPlacement(startLocation,endLocation)) {
+              const hasDuplicate = checkForDuplicates([...shipOnBoard, ...getShipCoordinates(startLocation, endLocation)]);
+              if (hasDuplicate) {
+                continue;
+              }
+              placeShipOnBoard(startLocation, endLocation);
+              shipPlaced = true;
             }
-          placeShipOnBoard(startLocation, endLocation);
-          shipPlaced = true;
       }
     }
   }
