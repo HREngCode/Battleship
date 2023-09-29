@@ -6,8 +6,7 @@ const board = [];
 const shipOnBoard = [];
 const strikes = [];
 const hits = [];
-const shipCoords = [];
-let targets = shipsRemaining.reduce((acc, val) => acc + val, 0);
+let targets
 
 function generateRandomLocation() {
   const row = String.fromCharCode(65 + Math.floor(Math.random() * gridSize));
@@ -64,42 +63,11 @@ function checkForDuplicates(arr) {
   return hasDuplicates;
 }
 
-// function checkStartEnd(startRow, endRow, startCol, endCol) {
-  //horizontal check
-  // for (let i = 0; i < shipsRemaining.length; i++) {
-  //   const shipTarget = shipsRemaining[i];
-  //   for (let j = 0; j <= shipTarget - 1; j++) {
-  //     if (startRow === endRow) {
-        
-  //       for (let number = startCol; number <= endCol - 1; number++) {
-  //         let coords = startRow + number;
-  //         shipCoords.push(coords)
-  //         console.log(coords);
-  //       }
-  //     } else {
-  //       for (let letterIndex = startRow; letterIndex <= endRow - 1; letterIndex++) {
-  //         const letter = String.fromCharCode(65 + letterIndex);
-  //         let coords = letter + startCol;
-  //         shipCoords.push(coords)
-  //       }
-  //     }
-  //   }
-
-
-    //vertical check
-
-    // console.log('line 47 ' + startRow, endRow, startCol, endCol);
-    // for (let i = startRow; i <= endRow; i++) {
-    //   for (let j = startCol; j <= endCol; j++) {
-    //     const cell = String.fromCharCode(65 + j) + (i + 1);
-    //     console.log('line 51 ' + cell);
-    //     if (shipOnBoard.includes(cell)) {
-    //       return false;
-    //     }
-    //   }
-//   }
-//   return true;
-// }
+function resetGame() {
+  shipsRemaining.length = 0;
+  shipsRemaining.push(2, 3, 3, 4, 5);
+  initializeGame();
+}
 
 function isValidPlacement(startLocation, endLocation) {
   const startRow = startLocation.charCodeAt(0) - 65;
@@ -152,11 +120,11 @@ function initializeGame() {
   shipOnBoard.length = 0;
   strikes.length = 0;
   hits.length = 0;
+  targets = shipsRemaining.reduce((acc, val) => acc + val, 0);
   buildGrid();
   placeShips();
   console.log("Press any key to start the game.");
   rs.keyInPause();
-  console.clear();
   console.log(
     `Enter a location to strike (e.g., A1-${String.fromCharCode(
       64 + gridSize
@@ -179,7 +147,7 @@ function handleInput(input) {
         "You have destroyed all battleships. Would you like to play again?"
       );
       if (playAgain) {
-        initializeGame();
+        resetGame();
       } else {
         console.log("Thanks for playing!");
         process.exit();
